@@ -19,7 +19,7 @@ import {
   applyResult,
   activeDecisions,
   buildInsights,
-} from '../shared/engine.js';
+} from '../public/js/engine.js';
 
 const rules = loadRuleset('mvp');
 const D = (over = {}) => ({ cacao: 'market', sugar: 'market', price: 'mid', ad: 'none', give: 'none', ...over });

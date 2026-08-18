@@ -18,12 +18,11 @@ import { RoomStore } from './store.js';
 import { PHASE } from './room.js';
 import { loadRuleset, listRulesets, CONFIG_DIR } from './rules.js';
 import { decideForBot, botThinkDelay, STRATEGIES, STRATEGY_IDS, BOT_ROTATION } from './bots.js';
-import { rngFor } from '../shared/rng.js';
+import { rngFor } from '../public/js/rng.js';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, '..');
 const PUBLIC_DIR = path.join(ROOT, 'public');
-const SHARED_DIR = path.join(ROOT, 'shared');
 
 const PORT = Number(process.env.PORT || 3000);
 const HOST = process.env.HOST || '0.0.0.0';
@@ -135,9 +134,17 @@ function sendFile(res, filePath) {
 
 /** ディレクトリの外に出るパスを弾く */
 function safeJoin(base, urlPath) {
-  const decoded = decodeURIComponent(urlPath.split('?')[0]);
+  let decoded;
+  try {
+    decoded = decodeURIComponent(urlPath.split('?')[0]);
+  } catch {
+    return null; // "%" 単体などの壊れたURLエンコード
+  }
+  if (decoded.includes('\0')) return null;
   const resolved = path.resolve(base, '.' + decoded);
-  return resolved.startsWith(base) ? resolved : null;
+  // base + セパレータまで見る。startsWith だけだと public-old/ のような
+  // 「名前が前方一致する別ディレクトリ」を通してしまう。
+  return resolved === base || resolved.startsWith(base + path.sep) ? resolved : null;
 }
 
 const server = http.createServer((req, res) => {
@@ -195,10 +202,6 @@ const server = http.createServer((req, res) => {
   }
 
   // --- 静的ファイル ---
-  if (pathname.startsWith('/shared/')) {
-    const file = safeJoin(SHARED_DIR, pathname.replace('/shared', ''));
-    if (file) return sendFile(res, file);
-  }
   const file = safeJoin(PUBLIC_DIR, pathname);
   if (file) return sendFile(res, file);
 

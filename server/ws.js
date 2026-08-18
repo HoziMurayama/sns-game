@@ -345,10 +345,7 @@ export function attachWebSocket(server, opts) {
       return;
     }
 
-    const accept = crypto
-      .createHash('sha1')
-      .update(key + GUID)
-      .digest('base64');
+    const accept = computeAccept(key);
 
     socket.write(
       'HTTP/1.1 101 Switching Protocols\r\n' +

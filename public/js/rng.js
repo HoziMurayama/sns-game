@@ -9,9 +9,10 @@
 
 /** 文字列 → 32bit シード（xmur3） */
 export function hashSeed(str) {
-  let h = 1779033703 ^ String(str).length;
-  for (let i = 0; i < String(str).length; i++) {
-    h = Math.imul(h ^ String(str).charCodeAt(i), 3432918353);
+  const s = String(str); // ループ内で毎回変換しない（結果は同じ）
+  let h = 1779033703 ^ s.length;
+  for (let i = 0; i < s.length; i++) {
+    h = Math.imul(h ^ s.charCodeAt(i), 3432918353);
     h = (h << 13) | (h >>> 19);
   }
   return () => {

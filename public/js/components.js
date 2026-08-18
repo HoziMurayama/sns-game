@@ -3,11 +3,11 @@
  * サーバから受け取った状態（snapshot）とルールだけを見て描画します。
  */
 
-import { el, fmt, fmtSigned, signClass, fmtQty, medal, dot, money, moneySigned, moneyValue, moneyUnit } from './ui.js';
-// '../../shared/engine.js' はブラウザでも Node でも同じファイルを指します
-// （ブラウザ: /shared/engine.js ／ Node: リポジトリの shared/engine.js）。
+import { el, fmt, signClass, fmtQty, medal, dot, money, moneySigned, moneyValue, moneyUnit } from './ui.js';
+// engine.js はブラウザでも Node でも同じファイルを指します
+// （ブラウザ: /js/engine.js ／ Node: public/js/engine.js）。
 // これでサーバとまったく同じ定義を画面側でも使え、テストからも読み込めます。
-import { findDecision, findOption } from './engine.js';
+import { findOption } from './engine.js';
 
 /* ------------------------------------------------ イベント */
 

@@ -29,6 +29,7 @@ export class Net {
     this.manualClose = false;
     this.connected = false;
     this._pingTimer = null;
+    this._reconnectTimer = null;
   }
 
   /* ---------------- イベント ---------------- */
@@ -104,7 +105,7 @@ export class Net {
     let ws;
     try {
       ws = new WebSocket(WS_URL);
-    } catch (err) {
+    } catch {
       this._scheduleReconnect();
       return;
     }
@@ -180,15 +181,21 @@ export class Net {
   }
 
   _scheduleReconnect() {
+    if (this.manualClose) return;
     const delay = BACKOFF[Math.min(this.attempt, BACKOFF.length - 1)];
     this.attempt++;
     this.emit('reconnecting', { attempt: this.attempt, delay });
-    setTimeout(() => this.connect(), delay);
+    clearTimeout(this._reconnectTimer);
+    this._reconnectTimer = setTimeout(() => this.connect(), delay);
   }
 
   disconnect() {
     this.manualClose = true;
     clearInterval(this._pingTimer);
+    // 予約ずみの再接続も止める。
+    // 消さないと connect() が manualClose を false に戻し、切ったはずが繋がり直す。
+    clearTimeout(this._reconnectTimer);
+    this._reconnectTimer = null;
     try {
       this.ws?.close();
     } catch {

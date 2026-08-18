@@ -10,9 +10,9 @@ import {
   applyResult,
   computeStandings,
   findDecision,
-} from '../shared/engine.js';
+} from '../public/js/engine.js';
 import { decideForBot } from '../server/bots.js';
-import { rngFor } from '../shared/rng.js';
+import { rngFor } from '../public/js/rng.js';
 
 /** ルールに実在する選択肢だけを使う（数値を変えても壊れないように） */
 function optIdByTier(rules, key, tier) {

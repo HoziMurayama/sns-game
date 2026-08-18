@@ -21,8 +21,8 @@ import {
   isDecisionComplete,
   defaultDecision,
   activeDecisions,
-} from '../shared/engine.js';
-import { rngFor, token as makeToken } from '../shared/rng.js';
+} from '../public/js/engine.js';
+import { rngFor, token as makeToken } from '../public/js/rng.js';
 
 export const PHASE = {
   LOBBY: 'lobby',

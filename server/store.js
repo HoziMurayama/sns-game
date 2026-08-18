@@ -11,7 +11,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Room } from './room.js';
 import { loadRuleset } from './rules.js';
-import { rngFor, roomCode } from '../shared/rng.js';
+import { rngFor, roomCode } from '../public/js/rng.js';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = path.resolve(HERE, '..', 'data');

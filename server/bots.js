@@ -12,7 +12,7 @@
  *  → ルールの数値を変えても、AIの強さが自動的に追従します（作り直し不要）。
  */
 
-import { resolveRound, activeDecisions, defaultOptionId, findOption } from '../shared/engine.js';
+import { resolveRound, activeDecisions, defaultOptionId, findOption } from '../public/js/engine.js';
 
 export const STRATEGIES = {
   profit: {
