@@ -1,5 +1,5 @@
 /**
- * 先生用コンソール（public/js/teacher.html.js）を、本物のサーバ相手に動かすテスト。
+ * 先生用コンソール（public/js/teacher.js）を、本物のサーバ相手に動かすテスト。
  *
  * 授業中に先生が実際に押すボタンを、そのままの順番でクリックしていきます。
  *   ルームを作成 → AIを追加 → 開始 → 次へ → …… → 結果発表 → CSV出力
@@ -31,7 +31,7 @@ URL.createObjectURL = (blob) => {
 };
 URL.revokeObjectURL = () => {};
 
-const teacherPage = await import('../public/js/teacher.html.js');
+const teacherPage = await import('../public/js/teacher.js');
 
 const live = () => globalThis.document;
 const $ = (sel) => live().querySelector(sel);
