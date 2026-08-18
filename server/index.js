@@ -230,9 +230,17 @@ function broadcast(code) {
     }
     return;
   }
+  // 共通部分は1回だけ作る。
+  // 人数ぶん snapshot() を呼ぶと、集計が人数の2乗回まわって40人学級で目に見えて重くなる。
+  const base = room.baseSnapshot();
   for (const conn of conns) {
     const { role, playerId } = conn.ctx;
-    conn.sendJson({ t: 'state', state: room.snapshot({ role, playerId }) });
+    let state = base;
+    if (role === 'player' && playerId) {
+      const you = room.youView(playerId);
+      if (you) state = { ...base, you };
+    }
+    conn.sendJson({ t: 'state', state });
   }
 }
 store.onBroadcast = broadcast;

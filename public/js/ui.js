@@ -3,7 +3,7 @@
 export const $ = (sel, root = document) => root.querySelector(sel);
 export const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 
-/** el('div', {class:'x', onclick:fn}, ['text', el('b',{},['!')]]) */
+/** el('div', { class: 'x', onclick: fn }, ['text', el('b', {}, ['!'])]) */
 export function el(tag, props = {}, children = []) {
   const node = document.createElement(tag);
   for (const [k, v] of Object.entries(props)) {
@@ -89,8 +89,6 @@ export function moneySigned(yen, rules) {
 /** 表の見出しに付ける単位（例: 売上（万円）） */
 export const moneyUnit = (rules) => currencyOf(rules).unitLabel;
 
-export const pt = (n, rules) => money(n, rules);
-
 /* ------------------------------------------------ 通知 */
 
 let bannerNode = null;
@@ -107,11 +105,6 @@ export function toast(message, kind = '', ms = 3200) {
   if (ms > 0) bannerTimer = setTimeout(() => bannerNode.classList.remove('show'), ms);
 }
 
-export function hideToast() {
-  clearTimeout(bannerTimer);
-  bannerNode?.classList.remove('show');
-}
-
 /* ------------------------------------------------ 画面切替 */
 
 export function showScreen(name) {
@@ -126,10 +119,6 @@ export function showScreen(name) {
 }
 
 /* ------------------------------------------------ その他 */
-
-export function ordinal(rank) {
-  return `${rank}位`;
-}
 
 export const medal = (rank) => (rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '');
 

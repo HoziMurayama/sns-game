@@ -1,2 +1,9 @@
 node_modules/
+
+# 実行時に作られるもの（コミットしない）
+data/rooms.json
 data/*.tmp
+
+# サーバのログ
+*.log
+*.err

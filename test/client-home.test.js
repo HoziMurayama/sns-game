@@ -265,7 +265,7 @@ test('modal-bg 画像があれば、モーダル上部の絵として使われ�
   const used = await home.applyModalArt();
   assert.ok(used, 'public/img に modal-bg 画像が置かれている');
   assert.match(used, /^\/img\/modal-bg\.(webp|jpg|jpeg|png)$/);
-  assert.equal(used, '/img/modal-bg.jpg', '軽いJPEGが優先して使われる');
+  assert.equal(used, '/img/modal-bg.webp', 'いちばん軽いWebPが優先して使われる');
 
   assert.equal(live().body.classList.contains('has-modal-art'), true);
   assert.equal(
@@ -274,10 +274,11 @@ test('modal-bg 画像があれば、モーダル上部の絵として使われ�
     'CSS変数にURLが入る'
   );
 
-  // 実際に配信できること
+  // 実際に配信できること（MIMEは拡張子から引く。画像を差し替えても壊れないように）
+  const MIME = { webp: 'image/webp', jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png' };
   const res = await fetch(`${server.url}${used}`);
   assert.equal(res.status, 200);
-  assert.equal(res.headers.get('content-type'), 'image/jpeg');
+  assert.equal(res.headers.get('content-type'), MIME[used.split('.').pop()]);
 });
 
 test('絵に文字が入っているので、CSSのタイトルは読み上げ用に残しつつ隠す', () => {

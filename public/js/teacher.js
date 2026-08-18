@@ -7,7 +7,7 @@
  */
 
 import { Net } from './net.js';
-import { $, el, mount, clear, fmt, fmtSigned, signClass, toast, showScreen, countdownText, money } from './ui.js';
+import { $, el, mount, clear, toast, showScreen, countdownText, money } from './ui.js';
 import {
   eventCard,
   playerList,
@@ -15,7 +15,6 @@ import {
   rankingList,
   scoreLegend,
   roundSteps,
-  stat,
 } from './components.js';
 import { renderQr } from './qr.js';
 import { applySetupArt } from './art.js';
@@ -457,10 +456,8 @@ function exportCsv() {
         evName,
         p?.name ?? '',
         p?.company ?? '',
-        ...dec.map((d) => {
-          const g = rules.decisions.find((x) => x.key === d.key);
-          return g?.options.find((o) => o.id === res.decision[d.key])?.name ?? '';
-        }),
+        // dec は rules.decisions を絞り込んだものなので、探し直す必要はない
+        ...dec.map((d) => d.options.find((o) => o.id === res.decision[d.key])?.name ?? ''),
         res.quantity,
         res.revenue,
         res.materialCost,

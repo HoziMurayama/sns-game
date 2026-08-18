@@ -71,7 +71,6 @@ export class Room extends EventEmitter {
     this.finalStageIndex = 0;
     this.deadline = null;
     this._timer = null;
-    this._botTimers = new Set();
     this.closed = false;
   }
 
@@ -364,9 +363,14 @@ export class Room extends EventEmitter {
   /* -------------------------------------------------- 画面に配る状態 */
 
   /**
-   * @param {{ role: 'teacher'|'player', playerId?: string }} viewer
+   * 誰が見ても同じ部分。
+   *
+   * ここは集計（standings）とラウンド記録の作り直しが入るので、決して安くない。
+   * 1回のブロードキャストで人数ぶん呼ぶと計算量が人数の2乗になるため、
+   * 配信側（server/index.js の broadcast）では1回だけ呼び、
+   * 生徒ごとの差分は youView() を足して作る。
    */
-  snapshot(viewer = { role: 'player' }) {
+  baseSnapshot() {
     const standings = this.standings();
     const currentEventId = this.eventPlan[this.round - 1];
     const showEvent = this.phase === PHASE.DECISION || this.phase === PHASE.RESULT;
@@ -416,21 +420,34 @@ export class Room extends EventEmitter {
       updatedAt: this.updatedAt,
     };
 
+    return snap;
+  }
+
+  /** 生徒ひとりにだけ見せる部分（自分の手札）。他人には配らない。 */
+  youView(playerId) {
+    const me = this.players.get(playerId);
+    if (!me) return null;
+    return {
+      id: me.id,
+      name: me.name,
+      company: me.company,
+      color: me.color,
+      icon: me.icon,
+      score: me.score,
+      draft: me.draft,
+      submitted: me.submitted,
+      requiredKeys: activeDecisions(this.rules).map((d) => d.key),
+    };
+  }
+
+  /**
+   * @param {{ role: 'teacher'|'player', playerId?: string }} viewer
+   */
+  snapshot(viewer = { role: 'player' }) {
+    const snap = this.baseSnapshot();
     if (viewer.role === 'player' && viewer.playerId) {
-      const me = this.players.get(viewer.playerId);
-      if (me) {
-        snap.you = {
-          id: me.id,
-          name: me.name,
-          company: me.company,
-          color: me.color,
-          icon: me.icon,
-          score: me.score,
-          draft: me.draft,
-          submitted: me.submitted,
-          requiredKeys: activeDecisions(this.rules).map((d) => d.key),
-        };
-      }
+      const you = this.youView(viewer.playerId);
+      if (you) snap.you = you;
     }
     return snap;
   }

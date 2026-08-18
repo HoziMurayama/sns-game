@@ -7,8 +7,8 @@
 
 import { Net } from './net.js';
 import {
-  $, el, mount, clear, fmt, fmtSigned, signClass, toast, showScreen, countdownText, dot,
-  money, moneySigned, moneyValue,
+  $, el, mount, clear, fmt, fmtSigned, signClass, toast, showScreen, countdownText,
+  money, moneyValue,
 } from './ui.js';
 import {
   eventCard,

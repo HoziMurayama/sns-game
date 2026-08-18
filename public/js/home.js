@@ -17,6 +17,7 @@ import {
 } from './art.js';
 
 import { injectSprite } from './icons.js';
+import { el } from './ui.js';
 
 // 生徒用ページ（play.js）とも共用しているため、ここから再公開しておく
 export { applyBackgroundArt, applyModalArt, BG_ART_CANDIDATES, MODAL_ART_CANDIDATES };
@@ -194,18 +195,3 @@ function showResumeHint() {
 }
 
 showResumeHint();
-
-/* ---------------------------------------------- 小さな道具 */
-
-function el(tag, props = {}, children = []) {
-  const node = document.createElement(tag);
-  for (const [k, v] of Object.entries(props)) {
-    if (k === 'class') node.className = v;
-    else node.setAttribute(k, v);
-  }
-  for (const c of [].concat(children)) {
-    if (c === null || c === undefined || c === false) continue;
-    node.appendChild(typeof c === 'object' ? c : document.createTextNode(String(c)));
-  }
-  return node;
-}
