@@ -1,5 +1,5 @@
 /**
- * 生徒用画面（public/js/play.js）を、本物のサーバ相手に最初から最後まで動かすテスト。
+ * 生徒用画面（public/js/play.html.js）を、本物のサーバ相手に最初から最後まで動かすテスト。
  *
  * ブラウザは使いませんが、
  *   ・実際の play.html を読み込み
@@ -40,7 +40,7 @@ const CODE = teacher.state.code;
 const other = await new TestClient(server.wsUrl, 'other').connect();
 
 // ここで実際の画面スクリプトを読み込む（読み込んだ瞬間に接続が始まる）
-const play = await import('../public/js/play.js');
+const play = await import('../public/js/play.html.js');
 
 const $ = (sel) => document.querySelector(sel);
 const activeScreen = () => document.querySelectorAll('.screen').find((s) => s.classList.contains('active'));

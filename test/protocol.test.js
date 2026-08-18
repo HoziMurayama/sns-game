@@ -134,7 +134,7 @@ test('同じ端末で開き直すと、古い接続が置き換わる', async ()
 test('参加用の短縮URLが参加画面へ転送する', async () => {
   const res = await fetch(`${server.url}/j/123456`, { redirect: 'manual' });
   assert.equal(res.status, 302);
-  assert.equal(res.headers.get('location'), '/play?code=123456');
+  assert.equal(res.headers.get('location'), '/play.html?code=123456');
 });
 
 test('親ディレクトリへの参照を拒否する', async () => {

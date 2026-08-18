@@ -182,14 +182,14 @@ const server = http.createServer((req, res) => {
 
   // --- ルーティング ---
   if (pathname === '/') return sendFile(res, path.join(PUBLIC_DIR, 'index.html'));
-  if (pathname === '/teacher' || pathname === '/teacher/')
+  if (pathname === '/teacher.html' || pathname === '/teacher.html/')
     return sendFile(res, path.join(PUBLIC_DIR, 'teacher.html'));
-  if (pathname === '/play' || pathname === '/play/') return sendFile(res, path.join(PUBLIC_DIR, 'play.html'));
+  if (pathname === '/play.html' || pathname === '/play.html/') return sendFile(res, path.join(PUBLIC_DIR, 'play.html'));
 
   // QRコード用の短いURL: /j/123456 → 参加画面（コード入力済み）
   const short = pathname.match(/^\/j\/(\d{4,8})\/?$/);
   if (short) {
-    res.writeHead(302, { Location: `/play?code=${short[1]}`, 'Cache-Control': 'no-store' });
+    res.writeHead(302, { Location: `/play.html?code=${short[1]}`, 'Cache-Control': 'no-store' });
     res.end();
     return;
   }
@@ -498,12 +498,12 @@ server.listen(PORT, HOST, () => {
   console.log('');
   console.log('  🍫  フェアトレード・チャレンジ ～チョコレートの旅～');
   console.log('  ───────────────────────────────────────────────');
-  console.log(`  先生用   : ${urls[0]}/teacher`);
-  console.log(`  生徒用   : ${urls[0]}/play`);
+  console.log(`  先生用   : ${urls[0]}/teacher.html`);
+  console.log(`  生徒用   : ${urls[0]}/play.html`);
   if (urls.length > 1) {
     console.log('');
     console.log('  同じWi-Fiの端末からは、こちらのURLで開けます:');
-    for (const u of urls.slice(1)) console.log(`    ${u}/play`);
+    for (const u of urls.slice(1)) console.log(`    ${u}/play.html`);
   }
   console.log('');
   console.log(`  ルールセット: ${rulesets.map((r) => r.id).join(', ')}`);

@@ -182,7 +182,7 @@ function showResumeHint() {
     'a',
     {
       class: 'hbtn hbtn-ghost',
-      href: isTeacher ? '/teacher' : `/play?code=${session.code}`,
+      href: isTeacher ? '/teacher.html' : `/play.html?code=${session.code}`,
       style: 'grid-column:1/-1',
     },
     [

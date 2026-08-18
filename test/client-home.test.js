@@ -115,11 +115,11 @@ test('生徒用と先生用、両方への入口がある（ここが今回の�
   const student = $('.hbtn-student');
   const teacher = $('.hbtn-teacher');
 
-  assert.equal(student.getAttribute('href'), '/play', '生徒は参加画面へ');
+  assert.equal(student.getAttribute('href'), '/play.html', '生徒は参加画面へ');
   assert.ok(student.allText.includes('ゲームに参加する'));
   assert.ok(student.allText.includes('生徒'));
 
-  assert.equal(teacher.getAttribute('href'), '/teacher', '先生はコンソールへ');
+  assert.equal(teacher.getAttribute('href'), '/teacher.html', '先生はコンソールへ');
   assert.ok(teacher.allText.includes('ルームを作成'));
 });
 
@@ -193,7 +193,7 @@ test('前回の続きがあれば、メニューに戻る導線が出る', async
 
   const resume = doc2.querySelectorAll('.home-actions A').find((a) => a.allText.includes('前回の続き'));
   assert.ok(resume, '続きに戻るリンクが出る');
-  assert.equal(resume.getAttribute('href'), '/play?code=482913', 'ルーム番号つきで参加画面へ戻る');
+  assert.equal(resume.getAttribute('href'), '/play.html?code=482913', 'ルーム番号つきで参加画面へ戻る');
 });
 
 /** localStorage を保ったまま DOM だけ作り直す */
@@ -362,20 +362,20 @@ function documentListeners(type) {
 test('生徒用ページから、トップと先生用へ行ける', () => {
   const html = fs.readFileSync(path.join(ROOT, 'public', 'play.html'), 'utf8');
   assert.match(html, /class="brand brand-link" href="\/"/, 'ヘッダのロゴがトップへのリンク');
-  assert.match(html, /href="\/teacher"/, '先生用への案内がある');
+  assert.match(html, /href="\/teacher.html"/, '先生用への案内がある');
 });
 
 test('先生用ページから、トップと生徒用へ行ける', () => {
   const html = fs.readFileSync(path.join(ROOT, 'public', 'teacher.html'), 'utf8');
   assert.match(html, /class="brand brand-link" href="\/"/, 'ヘッダのロゴがトップへのリンク');
-  assert.match(html, /href="\/play"/, '生徒用への案内がある');
+  assert.match(html, /href="\/play.html"/, '生徒用への案内がある');
 });
 
 test('サーバが3つの入口をすべて配信する', async () => {
   for (const [p, needle] of [
     ['/', 'ゲームの流れ'],
-    ['/play', 'ゲームに参加しよう'],
-    ['/teacher', 'ゲームルームを作る'],
+    ['/play.html', 'ゲームに参加しよう'],
+    ['/teacher.html', 'ゲームルームを作る'],
   ]) {
     const res = await fetch(`${server.url}${p}`);
     assert.equal(res.status, 200, `${p} が配信される`);
