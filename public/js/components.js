@@ -7,7 +7,7 @@ import { el, fmt, fmtSigned, signClass, fmtQty, medal, dot, money, moneySigned, 
 // '../../shared/engine.js' はブラウザでも Node でも同じファイルを指します
 // （ブラウザ: /shared/engine.js ／ Node: リポジトリの shared/engine.js）。
 // これでサーバとまったく同じ定義を画面側でも使え、テストからも読み込めます。
-import { findDecision, findOption } from '../../shared/engine.js';
+import { findDecision, findOption } from './engine.js';
 
 /* ------------------------------------------------ イベント */
 

@@ -21,7 +21,7 @@ import {
   marginSummary,
   stat,
 } from './components.js';
-import { activeDecisions, findOption } from '../../shared/engine.js';
+import { activeDecisions, findOption } from './engine.js';
 import { applyBackgroundArt, JOIN_ART_CANDIDATES } from './art.js';
 import { injectSprite } from './icons.js';
 
