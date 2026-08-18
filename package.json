@@ -1,0 +1,20 @@
+{
+  "name": "fairtrade-challenge",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "フェアトレード・チャレンジ ～チョコレートの旅～ / 中高生向け 複数人対戦型フェアトレード学習ゲーム (MVP)",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "test": "node --test",
+    "simulate": "node tools/simulate.js",
+    "balance": "node tools/simulate.js --games 2000 --report"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "license": "UNLICENSED"
+}

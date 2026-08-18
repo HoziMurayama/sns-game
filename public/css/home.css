@@ -1,0 +1,664 @@
+/* =========================================================
+   トップページ
+
+   起動直後は背景の絵だけを見せ、画面のどこかを押すとメニューが開きます。
+   （ゲームのタイトル画面と同じ作りです）
+
+   授業に入ってからの画面は app.css 側で、読みやすい明るい配色にしています。
+   ========================================================= */
+
+:root {
+  --ink: #2a1f17;
+  --gold: #f2c75c;
+  --gold-lt: #ffe9a8;
+  --gold-dk: #a9761c;
+  --cream: #fdf6e8;
+  --wood: #3b2415;
+  --wood-2: #2a1810;
+  --wood-lt: #59391f;
+
+  --market: #8a8f98;
+  --direct: #2f6fed;
+  --fairtrade: #1f9d55;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: system-ui, -apple-system, "Segoe UI", "Hiragino Kaku Gothic ProN", "Noto Sans JP",
+    "Yu Gothic UI", Meiryo, sans-serif;
+  line-height: 1.6;
+  -webkit-text-size-adjust: 100%;
+}
+
+body.home {
+  background: radial-gradient(1200px 700px at 50% -10%, #1d5570 0%, #0b2130 55%, #071620 100%);
+  color: var(--cream);
+  overflow: hidden;
+}
+
+/* ---------------------------------------------- 背景の絵
+
+   public/img/hero.(webp|jpg|png) があれば home.js が .has-bg-art を付けます。
+   無い場合は上のグラデーションのままで、ページは壊れません。
+
+   background-attachment:fixed は iOS Safari で崩れるため、
+   position:fixed の擬似要素で敷いています。
+   ------------------------------------------------------------- */
+
+body.home.has-bg-art::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-image: var(--bg-art);
+  background-size: cover;
+  background-position: center 42%;
+  background-repeat: no-repeat;
+}
+
+/* メニューを開いたときだけ、背景を少し落ち着かせる */
+body.home.menu-open.has-bg-art::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background: rgba(6, 20, 28, .55);
+}
+
+/* ---------------------------------------------- タイトル画面 */
+
+.start-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  appearance: none;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: clamp(28px, 7vh, 72px);
+  font: inherit;
+  color: inherit;
+}
+
+.start-layer:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: -6px;
+}
+
+/* 押せることが分かるように、少し置いてから静かに出す。
+   不要なら home.js の SHOW_HINT_AFTER_MS を 0 にすると出なくなります。 */
+.start-hint {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity .8s ease, transform .8s ease;
+  font-size: clamp(.9rem, 2.2vw, 1.05rem);
+  font-weight: 700;
+  letter-spacing: .08em;
+  color: #fff;
+  background: rgba(10, 26, 36, .5);
+  border: 1px solid rgba(255, 255, 255, .25);
+  border-radius: 999px;
+  padding: 9px 26px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, .7);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+.start-layer.hint-on .start-hint {
+  opacity: 1;
+  transform: none;
+  animation: hintPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes hintPulse {
+  0%, 100% { opacity: .78; }
+  50% { opacity: 1; }
+}
+
+body.menu-open .start-layer { display: none; }
+
+/* ---------------------------------------------- メニュー */
+
+.menu-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  overflow: auto;
+}
+
+.menu-veil[hidden] { display: none; }
+
+.menu-card {
+  position: relative;
+  width: min(1080px, 100%);
+  display: grid;
+  grid-template-columns: 236px 1fr;
+  background: var(--wood);
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, .65), 0 0 0 3px rgba(0, 0, 0, .35);
+  animation: menuIn .28s cubic-bezier(.2, .9, .3, 1.2) both;
+}
+
+@keyframes menuIn {
+  from { opacity: 0; transform: translateY(14px) scale(.97); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---- 閉じるボタン ---- */
+
+.menu-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 3;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, .28);
+  background: rgba(28, 18, 12, .82);
+  color: #fff;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background .15s ease, transform .1s ease;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+.menu-close:hover { background: rgba(60, 38, 24, .95); }
+.menu-close:active { transform: scale(.94); }
+.menu-close:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+
+/* ---------------------------------------------- モーダルの背景画像
+
+   public/img/modal-bg.(webp|jpg|png) があれば home.js が .has-modal-art を付けます。
+   この画像にはタイトル・リボン・✕ が描き込まれているので、
+     ・CSSで描いていたタイトルとリボンは隠す（読み上げ用には残す）
+     ・✕ は「絵の上に透明なボタンを重ねる」形にする
+   という切り替えを行います。
+   ------------------------------------------------------------- */
+
+/* body.home を足して、下のほうにある `body.has-bg-art .menu-hero`（同じ強さ）に
+   確実に勝てるようにしています。順番だけに頼ると、片方を動かしたときに壊れます。 */
+body.home.has-modal-art .menu-hero {
+  /* 画像と同じ比率にしておくと、描かれた✕の位置が常に同じ割合になる */
+  aspect-ratio: var(--modal-art-ratio, 874 / 344);
+  min-height: 0;
+  background-image: var(--modal-art);
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+body.home.has-modal-art .menu-hero .hero-svg { display: none; }
+body.home.has-modal-art .menu-hero::after { display: none; } /* 覆いは不要（絵に文字が入っているため） */
+
+/* タイトルは絵に描かれている。画面には出さないが、読み上げと検索のために残す。 */
+body.has-modal-art .hero-copy {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* 絵に描かれた✕にぴったり重ねる（位置は絵に合わせた割合指定）。
+   別の絵に差し替えたときは、下の4つの数値を調整してください。 */
+body.has-modal-art .menu-close {
+  top: var(--close-top, 4.6%);
+  right: var(--close-right, 1.7%);
+  left: auto;
+  width: var(--close-w, 7%);
+  height: auto;
+  aspect-ratio: 1;
+  min-width: 40px;   /* 小さな画面でも押せる大きさは確保する */
+  min-height: 40px;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+body.has-modal-art .menu-close:hover { background: rgba(255, 255, 255, .12); }
+body.has-modal-art .menu-close:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 0;
+  background: rgba(0, 0, 0, .25);
+}
+
+/* ---------------------------------------------- 左: ゲームの流れ */
+
+.flow-rail {
+  background: linear-gradient(180deg, var(--wood) 0%, var(--wood-2) 100%);
+  padding: 22px 16px 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.flow-title {
+  margin: 0 0 16px;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+  color: var(--gold);
+  text-align: center;
+}
+
+.flow-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+}
+
+.flow-list li {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 4px 0;
+  font-size: .9rem;
+  font-weight: 600;
+  color: #f5e9d8;
+}
+
+/* 段のあいだに矢印を出す */
+.flow-list li + li::before {
+  content: "";
+  position: absolute;
+  margin-left: 16px;
+  margin-top: -30px;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 7px solid rgba(242, 199, 92, .55);
+}
+
+/* アイコンはインラインSVG。端末ごとに見た目が変わらないよう絵文字は使いません。 */
+.ic { width: 1.15em; height: 1.15em; fill: currentColor; flex: none; }
+
+.flow-ic {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, .3), inset 0 1px 0 rgba(255, 255, 255, .35);
+}
+.flow-ic .ic { width: 19px; height: 19px; }
+
+.ic-farm    { background: #4a9b52; }
+.ic-coop    { background: #e0913c; }
+.ic-ship    { background: #3f7fc4; }
+.ic-factory { background: #8a5fb0; }
+.ic-shop    { background: #d9534f; }
+.ic-people  { background: #7a5a3f; }
+
+.flow-nm { line-height: 1.3; }
+
+.flow-note {
+  margin: 18px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, .14);
+  font-size: .76rem;
+  line-height: 1.7;
+  color: rgba(245, 233, 216, .62);
+}
+
+/* ---------------------------------------------- 右: タイトルと入口 */
+
+.menu-main { display: flex; flex-direction: column; background: var(--wood-2); }
+
+/* ---- 絵とタイトル ---- */
+
+.menu-hero {
+  position: relative;
+  min-height: 240px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #bfe4f2;
+}
+
+.menu-hero .hero-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 背景の絵があるときは、メニューの中の絵も同じ絵にそろえる */
+body.has-bg-art .menu-hero {
+  background-image: var(--bg-art);
+  background-size: cover;
+  background-position: center 38%;
+}
+body.has-bg-art .menu-hero .hero-svg { display: none; }
+
+/* タイトルを読みやすくするための、うっすらとした覆い */
+.menu-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(10, 24, 32, .34) 0%, rgba(10, 24, 32, .12) 45%, rgba(42, 24, 16, .55) 100%);
+}
+
+.hero-copy {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 26px 18px 22px;
+}
+
+.menu-title { margin: 0; display: flex; flex-direction: column; gap: 2px; }
+
+.menu-title .t1,
+.menu-title .t2 {
+  font-weight: 900;
+  letter-spacing: .02em;
+  color: var(--gold-lt);
+  /* 縁取り＋厚み。background-clip を使わないので全ブラウザで同じに出ます */
+  text-shadow:
+    -2px -2px 0 #4a2c12, 2px -2px 0 #4a2c12, -2px 2px 0 #4a2c12, 2px 2px 0 #4a2c12,
+    0 -2px 0 #4a2c12, 0 2px 0 #4a2c12, -2px 0 0 #4a2c12, 2px 0 0 #4a2c12,
+    0 5px 0 #3a2410, 0 9px 20px rgba(0, 0, 0, .6);
+}
+
+.menu-title .t1 { font-size: clamp(1.7rem, 4.6vw, 2.9rem); line-height: 1.15; }
+.menu-title .t2 { font-size: clamp(1.25rem, 3.4vw, 2.15rem); line-height: 1.2; color: var(--gold); }
+
+.ribbon {
+  display: inline-block;
+  margin: 12px 0 0;
+  padding: 6px 30px;
+  font-size: clamp(.78rem, 2vw, .95rem);
+  font-weight: 700;
+  color: #ffeccd;
+  background: linear-gradient(180deg, #7c4a24 0%, #5c3417 100%);
+  border: 1px solid rgba(255, 236, 205, .35);
+  border-radius: 6px;
+  box-shadow: 0 5px 14px rgba(0, 0, 0, .45);
+  position: relative;
+}
+.ribbon::before,
+.ribbon::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  transform: translateY(-50%) rotate(45deg);
+  background: #4a2a12;
+}
+.ribbon::before { left: -7px; }
+.ribbon::after { right: -7px; }
+
+/* ---- ボタンの入った白いパネル ---- */
+
+.menu-panel {
+  background: var(--cream);
+  margin: 14px;
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: inset 0 1px 0 #fff, 0 6px 18px rgba(0, 0, 0, .3);
+}
+
+.home-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.hbtn {
+  appearance: none;
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  border-radius: 14px;
+  padding: 14px 16px;
+  min-height: 78px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+  font-weight: 800;
+  font-size: clamp(.95rem, 1.8vw, 1.12rem);
+  line-height: 1.28;
+  transition: transform .09s ease, box-shadow .15s ease, filter .15s ease;
+}
+
+.hbtn-ic {
+  font-size: 1.5rem;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .22);
+}
+
+.hbtn-tx small { display: block; font-size: .76rem; font-weight: 700; opacity: .85; }
+
+.hbtn-student {
+  background: linear-gradient(180deg, #f0913f 0%, #d9662a 100%);
+  box-shadow: 0 5px 0 #a94a1c, 0 10px 22px rgba(0, 0, 0, .28);
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .3);
+}
+
+.hbtn-teacher {
+  background: linear-gradient(180deg, #4a7ed0 0%, #2b4f9e 100%);
+  box-shadow: 0 5px 0 #1e3b78, 0 10px 22px rgba(0, 0, 0, .28);
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .3);
+}
+
+.hbtn-ghost {
+  min-height: 54px;
+  font-size: 1rem;
+  background: #fffdf7;
+  border: 2px solid #e0cfab;
+  color: #6b4a24;
+  box-shadow: 0 2px 0 #e0cfab;
+}
+.hbtn-ghost .hbtn-ic {
+  font-size: 1.1rem;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  background: transparent;
+}
+
+.hbtn:hover { filter: brightness(1.05); }
+.hbtn-ghost:hover { background: #fff7e8; }
+
+.hbtn-student:active, .hbtn-teacher:active {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, .3);
+}
+.hbtn-ghost:active { transform: translateY(2px); box-shadow: none; }
+
+.hbtn:focus-visible { outline: 3px solid #b8862c; outline-offset: 3px; }
+
+.menu-foot {
+  margin: 14px 0 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: .78rem;
+  color: #8a725a;
+}
+.menu-copy { white-space: nowrap; }
+
+/* ---------------------------------------------- ダイアログ */
+
+.dlg {
+  width: min(860px, calc(100vw - 32px));
+  max-height: min(86vh, 900px);
+  border: 0;
+  border-radius: 18px;
+  padding: 26px 28px 30px;
+  background: #fffaf2;
+  color: var(--ink);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, .5);
+  overflow: auto;
+}
+
+.dlg::backdrop { background: rgba(6, 20, 28, .72); }
+
+.dlg h2 {
+  margin: 0 0 16px;
+  font-size: 1.45rem;
+  color: #7b4b2a;
+  border-bottom: 3px solid #f0e0c8;
+  padding-bottom: 10px;
+}
+
+.dlg h3 { margin: 0 0 8px; font-size: 1.02rem; }
+.dlg-h3 { margin-top: 22px !important; }
+
+.dlg-close-form { float: right; margin: -8px -10px 0 0; }
+
+.dlg-x {
+  border: 1px solid #e6dbcd;
+  background: #fff;
+  color: #7a6a5c;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 1rem;
+  cursor: pointer;
+  line-height: 1;
+}
+.dlg-x:hover { background: #f4ece0; }
+
+.dlg-cols {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 22px;
+}
+
+.dlg-steps { margin: 0; padding-left: 1.25em; }
+.dlg-steps li { margin-bottom: 6px; }
+.dlg-steps ul { margin: 4px 0; padding-left: 1.1em; color: #6b5849; font-size: .9rem; }
+
+.dlg-p { margin: 0 0 10px; font-size: .95rem; }
+.muted { color: #9c8b7c; }
+
+.dlg-tip {
+  margin: 10px 0 0;
+  background: #f3ecdd;
+  border-radius: 10px;
+  padding: 9px 12px;
+  font-size: .88rem;
+}
+
+.badge {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 1px 10px;
+  font-size: .76rem;
+  color: #fff;
+  margin-right: 4px;
+  vertical-align: 2px;
+}
+.badge-student { background: #d9662a; }
+.badge-teacher { background: #2b4f9e; }
+
+.tier-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 12px;
+}
+
+.tier-card {
+  border: 1px solid #eadfcd;
+  border-left-width: 6px;
+  border-radius: 12px;
+  padding: 12px 14px;
+  background: #fff;
+}
+.tier-card b { display: block; margin-bottom: 4px; }
+.tier-card p { margin: 0; font-size: .86rem; color: #6b5849; }
+.t-market { border-left-color: var(--market); }
+.t-direct { border-left-color: var(--direct); }
+.t-fairtrade { border-left-color: var(--fairtrade); }
+
+.news-list { display: flex; flex-direction: column; gap: 12px; }
+
+.news-item {
+  border: 1px solid #eadfcd;
+  border-radius: 12px;
+  padding: 12px 14px;
+  background: #fff;
+}
+.news-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
+.news-date { font-size: .78rem; color: #9c8b7c; font-variant-numeric: tabular-nums; }
+.news-title { font-weight: 700; }
+.news-body { margin: 0; font-size: .89rem; color: #6b5849; }
+
+.news-tag { border-radius: 999px; padding: 1px 9px; font-size: .7rem; font-weight: 700; color: #fff; }
+.tag-new { background: #d64545; }
+.tag-update { background: #2f7fd0; }
+.tag-info { background: #9c8b7c; }
+
+/* ---------------------------------------------- 画面が狭いとき */
+
+@media (max-width: 860px) {
+  .menu-card { grid-template-columns: 1fr; }
+
+  .flow-rail { padding: 14px 14px 12px; }
+  .flow-title { margin-bottom: 10px; }
+  .flow-list { display: flex; gap: 4px; overflow-x: auto; padding-bottom: 4px; }
+  .flow-list li { flex-direction: column; gap: 5px; min-width: 78px; text-align: center; font-size: .7rem; }
+  .flow-list li + li::before { display: none; }
+  .flow-note { display: none; }
+
+  .menu-hero { min-height: 190px; }
+  .menu-close { width: 40px; height: 40px; top: 10px; right: 10px; }
+}
+
+@media (max-width: 560px) {
+  .menu-veil { padding: 10px; }
+  .home-actions { grid-template-columns: 1fr; }
+  .hbtn { min-height: 64px; }
+  .menu-panel { margin: 10px; padding: 14px; }
+  .menu-foot { justify-content: center; text-align: center; }
+  .dlg { padding: 20px 18px 24px; }
+}
+
+/* 高さが足りない端末（横向きタブレット等）では中身を詰める */
+@media (max-height: 620px) {
+  .menu-hero { min-height: 150px; }
+  .hero-copy { padding: 14px 14px 12px; }
+  .hbtn { min-height: 60px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}

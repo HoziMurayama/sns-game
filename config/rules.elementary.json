@@ -1,0 +1,58 @@
+{
+  "extends": "rules.mvp.json",
+  "id": "elementary",
+  "label": "小学校版（3ラウンド・かんたん）",
+  "note": "同じエンジンのまま、ラウンド数と決めることを減らした版。10〜15分で終わります。砂糖・広告・追加還元は使いません。",
+  "tagline": "あなたはチョコレート会社の社長さんです。3年間、どんな会社にしますか？",
+  "game": {
+    "rounds": 3,
+    "startingFunds": 10000000
+  },
+  "decisions": [
+    {
+      "key": "sugar",
+      "enabled": false
+    },
+    {
+      "key": "ad",
+      "enabled": false
+    },
+    {
+      "key": "give",
+      "enabled": false
+    },
+    {
+      "key": "cacao",
+      "label": "カカオを どこから 買いますか？",
+      "hint": "安く買うか、農家の人たちのことを考えて買うか、えらんでみましょう。"
+    },
+    {
+      "key": "price",
+      "label": "チョコレートを いくらで 売りますか？",
+      "hint": "安くすると たくさん売れます。高くすると 少ししか売れませんが、もうけは大きくなります。"
+    }
+  ],
+  "events": {
+    "fixedOrder": [
+      "quiet",
+      "cacao_shortage",
+      "fairtrade_boom"
+    ],
+    "mode": "fixed"
+  },
+  "scoring": {
+    "weights": {
+      "profit": 0.5,
+      "producer": 0.3,
+      "society": 0.2
+    }
+  },
+  "reflection": {
+    "questions": [
+      "いちばん もうかった会社は、どの会社でしたか。",
+      "そうごう1位の会社は、どんなことをしていましたか。",
+      "カカオを作っている農家の人たちは、どんな1年だったと思いますか。",
+      "あなたがお店でチョコレートを買うとき、どれをえらびますか。それは なぜですか。"
+    ]
+  }
+}

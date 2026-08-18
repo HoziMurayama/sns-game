@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>チョコレートの旅 ｜ フェアトレード・チャレンジ</title>
+<link rel="stylesheet" href="/css/home.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍫</text></svg>">
+</head>
+<body class="home">
+
+<!-- ============================================================
+     タイトル画面：背景の絵だけを見せる。
+     画面のどこを押してもメニューが開きます（キーボードでも開けます）。
+     ============================================================ -->
+<button type="button" id="startLayer" class="start-layer" aria-label="画面を押してメニューを開く">
+  <span class="start-hint" id="startHint" aria-hidden="true">画面をタップしてはじめる</span>
+</button>
+
+<!-- ============================================================
+     メニュー
+     ============================================================ -->
+<div class="menu-veil" id="menuVeil" hidden>
+  <div class="menu-card" id="menuCard" role="dialog" aria-modal="true" aria-labelledby="menuTitle">
+
+    <!-- 左: ゲームの流れ -->
+    <aside class="flow-rail">
+      <h2 class="flow-title">ゲームの流れ</h2>
+      <ol class="flow-list">
+        <li><span class="flow-ic ic-farm"><svg class="ic"><use href="#i-farm"></use></svg></span><span class="flow-nm">カカオ農家</span></li>
+        <li><span class="flow-ic ic-coop"><svg class="ic"><use href="#i-coop"></use></svg></span><span class="flow-nm">協同組合</span></li>
+        <li><span class="flow-ic ic-ship"><svg class="ic"><use href="#i-ship"></use></svg></span><span class="flow-nm">輸出</span></li>
+        <li><span class="flow-ic ic-factory"><svg class="ic"><use href="#i-factory"></use></svg></span><span class="flow-nm">チョコレート会社</span></li>
+        <li><span class="flow-ic ic-shop"><svg class="ic"><use href="#i-shop"></use></svg></span><span class="flow-nm">お店</span></li>
+        <li><span class="flow-ic ic-people"><svg class="ic"><use href="#i-consumer"></use></svg></span><span class="flow-nm">消費者</span></li>
+      </ol>
+      <p class="flow-note">よりよい選択が、<br>みんなの未来をつくります。</p>
+    </aside>
+
+    <!-- 右: タイトルと入口 -->
+    <div class="menu-main">
+
+      <div class="menu-hero" id="menuHero">
+        <!-- 閉じるボタン。modal-bg 画像には✕が描かれているので、
+             画像を使うときは、この操作用ボタンをその位置にぴったり重ねます。 -->
+        <button type="button" class="menu-close" id="menuClose" aria-label="メニューを閉じる">
+          <span aria-hidden="true">✕</span>
+        </button>
+
+        <svg class="hero-svg" viewBox="0 0 720 330" role="img"
+             aria-label="カカオ農園から船で運ばれ、お店にならぶまでの風景">
+          <defs>
+            <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#7fc6e8"/><stop offset="55%" stop-color="#bfe4f2"/>
+              <stop offset="100%" stop-color="#f3e6c8"/>
+            </linearGradient>
+            <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#3d9fd0"/><stop offset="100%" stop-color="#2b6f9e"/>
+            </linearGradient>
+            <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#6bb168"/><stop offset="100%" stop-color="#4b8a4d"/>
+            </linearGradient>
+            <radialGradient id="sunGlow">
+              <stop offset="0%" stop-color="#fff3c4" stop-opacity=".95"/>
+              <stop offset="100%" stop-color="#fff3c4" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <rect width="720" height="330" fill="url(#sky)"/>
+          <circle cx="596" cy="66" r="80" fill="url(#sunGlow)"/>
+          <circle cx="596" cy="66" r="27" fill="#ffe08a"/>
+          <g fill="#fff" opacity=".85">
+            <ellipse cx="120" cy="52" rx="34" ry="14"/><ellipse cx="150" cy="46" rx="26" ry="16"/>
+            <ellipse cx="452" cy="38" rx="28" ry="12"/><ellipse cx="478" cy="34" rx="20" ry="13"/>
+          </g>
+          <path d="M0 150 L96 96 L166 150 Z" fill="#8fb4a8" opacity=".75"/>
+          <path d="M120 150 L214 88 L300 150 Z" fill="#7ea597" opacity=".8"/>
+          <rect y="150" width="720" height="52" fill="url(#sea)"/>
+          <g transform="translate(330 96)">
+            <path d="M46 12 L46 62 L92 62 Z" fill="#fdf6e6" stroke="#e4d3ae" stroke-width="1.5"/>
+            <path d="M42 20 L42 62 L6 62 Z" fill="#fffaf0" stroke="#e4d3ae" stroke-width="1.5"/>
+            <rect x="43" y="4" width="3" height="60" rx="1.5" fill="#7c5230"/>
+            <path d="M46 6 h16 l-16 8 z" fill="#d8534f"/>
+            <path d="M2 62 h96 l-13 16 a8 8 0 0 1-6 3 H21 a8 8 0 0 1-6-3 z" fill="#8a5a2b"/>
+          </g>
+          <path d="M0 196 q120 -22 250 -6 q160 20 300 4 q100 -12 170 2 v134 H0 z" fill="url(#ground)"/>
+          <g transform="translate(48 132)">
+            <path d="M28 40 q-4 40 0 74 h10 q4-34 0-74z" fill="#6b4b2f"/>
+            <g fill="#2f7a45">
+              <ellipse cx="33" cy="34" rx="42" ry="24"/><ellipse cx="10" cy="48" rx="26" ry="16"/>
+              <ellipse cx="58" cy="48" rx="26" ry="16"/>
+            </g>
+            <ellipse cx="16" cy="66" rx="6" ry="10" fill="#e0803a" transform="rotate(-12 16 66)"/>
+            <ellipse cx="50" cy="72" rx="6" ry="10" fill="#c2571f" transform="rotate(10 50 72)"/>
+            <ellipse cx="34" cy="80" rx="5.5" ry="9" fill="#e8a24a"/>
+          </g>
+          <g transform="translate(556 150)">
+            <rect x="8" y="24" width="96" height="60" rx="4" fill="#f6ead3"/>
+            <path d="M0 26 L56 0 L112 26 Z" fill="#c25b4a"/>
+            <rect x="22" y="44" width="26" height="24" rx="3" fill="#a7d5e8"/>
+            <rect x="62" y="44" width="30" height="40" rx="3" fill="#8a5a2b"/>
+            <rect x="16" y="30" width="80" height="9" rx="4.5" fill="#e8b84b"/>
+          </g>
+        </svg>
+
+        <div class="hero-copy">
+          <h1 class="menu-title" id="menuTitle">
+            <span class="t1">チョコレートの旅</span>
+            <span class="t2">フェアトレード・チャレンジ</span>
+          </h1>
+          <p class="ribbon">～おいしさの裏にある、やさしい選択～</p>
+        </div>
+      </div>
+
+      <div class="menu-panel">
+        <nav class="home-actions" aria-label="はじめる">
+          <a class="hbtn hbtn-student" href="/play">
+            <span class="hbtn-ic">🍫</span>
+            <span class="hbtn-tx">ゲームに参加する<small>（生徒）</small></span>
+          </a>
+          <a class="hbtn hbtn-teacher" href="/teacher">
+            <span class="hbtn-ic">🎓</span>
+            <span class="hbtn-tx">先生として<br>ルームを作成</span>
+          </a>
+          <button class="hbtn hbtn-ghost" type="button" data-dialog="dlgHowto">
+            <span class="hbtn-ic">📖</span><span class="hbtn-tx">遊び方</span>
+          </button>
+          <button class="hbtn hbtn-ghost" type="button" data-dialog="dlgNews">
+            <span class="hbtn-ic">🔔</span><span class="hbtn-tx">お知らせ</span>
+          </button>
+        </nav>
+
+        <p class="menu-foot">
+          <span>このゲームで学んだ内容を、未来のやさしい選択につなげていきましょう。</span>
+          <span class="menu-copy">© Fair Trade × Education</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 遊び方 ============ -->
+<dialog id="dlgHowto" class="dlg">
+  <form method="dialog" class="dlg-close-form"><button class="dlg-x" aria-label="閉じる">✕</button></form>
+  <h2>遊び方</h2>
+
+  <div class="dlg-cols">
+    <section>
+      <h3><span class="badge badge-student">生徒</span> の人</h3>
+      <ol class="dlg-steps">
+        <li>先生の画面に出ている<b>6けたの番号</b>（またはQRコード）で参加します。</li>
+        <li>あなたはチョコレート会社の社長です。<b>5年間</b>の経営を任されます。</li>
+        <li>毎年、5つのことを決めます。
+          <ul>
+            <li>カカオの仕入れ先</li>
+            <li>砂糖の仕入れ先</li>
+            <li>商品の販売価格</li>
+            <li>広告費</li>
+            <li>生産者・地域への追加還元</li>
+          </ul>
+        </li>
+        <li>全員が決めると、その年の結果が出ます。</li>
+      </ol>
+    </section>
+
+    <section>
+      <h3><span class="badge badge-teacher">先生</span> の方</h3>
+      <ol class="dlg-steps">
+        <li>「先生としてルームを作成」を押します。</li>
+        <li>出てきた番号とQRコードを、プロジェクタなどで見せます。</li>
+        <li>全員が入ったら「ゲームを開始する」。</li>
+        <li>あとは「次へ ▶」を押していくだけです。</li>
+      </ol>
+      <p class="dlg-tip">
+        💡 1台だけで試すときは「🤖 練習用AIを追加」を押してください。CPUが相手をします。
+      </p>
+    </section>
+  </div>
+
+  <h3 class="dlg-h3">3つの仕入れ先のちがい</h3>
+  <div class="tier-cards">
+    <div class="tier-card t-market">
+      <b>一般市場</b>
+      <p>いちばん安く買えます。ただし相場が動くと仕入れ値も大きく動き、生産者にいくら届いているかは分かりません。</p>
+    </div>
+    <div class="tier-card t-direct">
+      <b>直接取引</b>
+      <p>生産者と自社で直接契約します。相場より高く買うと決められますが、共通の基準や第三者の監査はありません。</p>
+    </div>
+    <div class="tier-card t-fairtrade">
+      <b>国際フェアトレード認証</b>
+      <p>国際基準にもとづく取引。最低価格が保証され、プレミアムが生産者組合に支払われます。第三者機関の監査つき。</p>
+    </div>
+  </div>
+
+  <h3 class="dlg-h3">勝ち方はひとつではありません</h3>
+  <p class="dlg-p">
+    ゲームの最後に、<b>利益ランキング</b>と<b>サステナビリティ総合ランキング</b>の2つが発表されます。
+    総合ランキングは「会社の利益 60%」「生産者への貢献 25%」「社会・環境への貢献 15%」で計算します。
+  </p>
+  <p class="dlg-p">
+    認証原料を選べば必ず勝てるわけではありません。価格の付け方や広告の判断をまちがえれば負けますし、
+    安い原料だけで利益を出しても、総合では順位が下がります。
+    <b>どうすれば会社も生産者も続けられるのか</b>——それを考えるゲームです。
+  </p>
+</dialog>
+
+<!-- ============ お知らせ ============ -->
+<dialog id="dlgNews" class="dlg">
+  <form method="dialog" class="dlg-close-form"><button class="dlg-x" aria-label="閉じる">✕</button></form>
+  <h2>お知らせ</h2>
+  <div id="newsList" class="news-list"><p class="dlg-p muted">読み込み中…</p></div>
+</dialog>
+
+<script type="module" src="/js/home.js"></script>
+</body>
+</html>

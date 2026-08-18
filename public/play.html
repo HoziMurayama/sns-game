@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>フェアトレード・チャレンジ｜生徒用</title>
+<link rel="stylesheet" href="/css/app.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍫</text></svg>">
+</head>
+<!-- 最初に出るのは参加画面。JSが動く前から背景が正しく出るようにクラスを付けておく -->
+<body class="screen-join">
+
+<header class="appbar">
+  <div class="wrap">
+    <a class="brand brand-link" href="/" title="トップページへ">
+      <svg class="ic brand-ic" aria-hidden="true"><use href="#i-pod"></use></svg>フェアトレード・チャレンジ
+    </a>
+    <span class="chip" id="chipCompany" hidden></span>
+    <span class="chip" id="chipRoom" hidden></span>
+    <span class="chip" id="chipRound" hidden></span>
+    <span class="spacer"></span>
+    <span class="conn-badge" id="conn">接続中</span>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <!-- ============================ 参加 ============================ -->
+    <section class="screen active" data-screen="join">
+      <div class="join-layout">
+
+        <!-- 左: ゲームの流れ（参加画面だけに出します。ゲームが始まったら畳んで画面を広く使います） -->
+        <aside class="flow-rail" aria-label="ゲームの流れ">
+          <h2 class="flow-ribbon">ゲームの流れ</h2>
+          <ol class="flow-list">
+            <li><span class="flow-ic ic-farm"><svg class="ic"><use href="#i-farm"></use></svg></span><span class="flow-nm">カカオ農家</span></li>
+            <li><span class="flow-ic ic-coop"><svg class="ic"><use href="#i-coop"></use></svg></span><span class="flow-nm">協同組合</span></li>
+            <li><span class="flow-ic ic-ship"><svg class="ic"><use href="#i-ship"></use></svg></span><span class="flow-nm">輸出</span></li>
+            <li><span class="flow-ic ic-factory"><svg class="ic"><use href="#i-factory"></use></svg></span><span class="flow-nm">チョコレート会社</span></li>
+            <li><span class="flow-ic ic-shop"><svg class="ic"><use href="#i-shop"></use></svg></span><span class="flow-nm">お店</span></li>
+            <li><span class="flow-ic ic-people"><svg class="ic"><use href="#i-consumer"></use></svg></span><span class="flow-nm">消費者</span></li>
+          </ol>
+          <p class="flow-note">よりよい選択が、<br>みんなの未来をつくります。</p>
+          <svg class="flow-watermark" aria-hidden="true"><use href="#i-pod"></use></svg>
+        </aside>
+
+        <!-- 中央: 参加フォーム -->
+        <div class="join-card">
+          <h1 class="join-title">ゲームに参加しよう！</h1>
+          <div class="join-rule" aria-hidden="true">
+            <svg class="ic"><use href="#i-pod"></use></svg>
+          </div>
+          <p class="join-lead">
+            先生の画面に出ている <b>6けたの番号</b> を入力してください。
+          </p>
+
+          <form id="joinForm" novalidate>
+            <div class="field">
+              <label for="codeInput">
+                <svg class="ic lbl-ic" aria-hidden="true"><use href="#i-pod"></use></svg>ルーム番号
+              </label>
+              <input id="codeInput" class="code-input" type="text" inputmode="numeric" pattern="[0-9]*"
+                     maxlength="6" autocomplete="off" autocapitalize="off" spellcheck="false"
+                     enterkeyhint="next" placeholder="000000" required>
+            </div>
+
+            <div class="field">
+              <label for="nameInput">
+                <svg class="ic lbl-ic" aria-hidden="true"><use href="#i-pod"></use></svg>あなたの名前（ニックネームでもOK）
+              </label>
+              <input id="nameInput" type="text" maxlength="12" autocomplete="off"
+                     enterkeyhint="go" placeholder="例: たろう" required>
+            </div>
+
+            <p id="joinError" class="join-error" role="alert" hidden></p>
+
+            <button class="btn-join" type="submit" id="joinBtn">
+              <svg class="ic btn-join-ic" aria-hidden="true"><use href="#i-users"></use></svg>参加する
+            </button>
+          </form>
+
+          <p class="join-note">
+            <svg class="ic note-ic" aria-hidden="true"><use href="#i-lock"></use></svg>
+            ログインは必要ありません。名前は先生とクラスの人にだけ表示されます。
+          </p>
+
+          <div id="resumeBox" hidden>
+            <div class="resume-box">
+              <p>前回の続きが残っています。</p>
+              <button class="btn" id="resumeBtn" type="button">前回の続きから戻る</button>
+            </div>
+          </div>
+
+          <p class="crosslink">
+            <a href="/">← トップにもどる</a>
+            <span class="sep">／</span>
+            <a href="/teacher">先生の方はこちら（ルームを作成）</a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ 待機 ============================ -->
+    <section class="screen" data-screen="lobby">
+      <div class="lobby-layout">
+
+        <!-- 左: ゲームの流れ -->
+        <aside class="flow-rail" aria-label="ゲームの流れ">
+          <h2 class="flow-ribbon">ゲームの流れ</h2>
+          <ol class="flow-list">
+            <li><span class="flow-ic ic-farm"><svg class="ic"><use href="#i-farm"></use></svg></span><span class="flow-nm">カカオ農家</span></li>
+            <li><span class="flow-ic ic-coop"><svg class="ic"><use href="#i-coop"></use></svg></span><span class="flow-nm">協同組合</span></li>
+            <li><span class="flow-ic ic-ship"><svg class="ic"><use href="#i-ship"></use></svg></span><span class="flow-nm">輸出</span></li>
+            <li><span class="flow-ic ic-factory"><svg class="ic"><use href="#i-factory"></use></svg></span><span class="flow-nm">チョコレート会社</span></li>
+            <li><span class="flow-ic ic-shop"><svg class="ic"><use href="#i-shop"></use></svg></span><span class="flow-nm">お店</span></li>
+            <li><span class="flow-ic ic-people"><svg class="ic"><use href="#i-consumer"></use></svg></span><span class="flow-nm">消費者</span></li>
+          </ol>
+          <p class="flow-note">よりよい選択が、<br>みんなの未来をつくります。</p>
+          <svg class="flow-watermark" aria-hidden="true"><use href="#i-pod"></use></svg>
+        </aside>
+
+        <!-- 中央 -->
+        <div class="lobby-card">
+          <header class="lobby-head">
+            <h1 class="lobby-room">ルーム：<span id="lobbyCode">------</span></h1>
+            <p class="lobby-count">参加者 <b id="lobbyCount">0 / 6</b> 人</p>
+          </header>
+
+          <div class="lobby-block lobby-joined">
+            <h2 class="joined-title">参加できました！</h2>
+            <p class="joined-sub">先生が「ゲーム開始」を押すまで待ってください。</p>
+            <div id="myCard"></div>
+          </div>
+
+          <div class="lobby-block">
+            <h3 class="block-title">
+              いま参加している人
+              <span class="block-sub" id="lobbyMembers"></span>
+            </h3>
+            <div id="lobbyPlayers"></div>
+          </div>
+
+          <div class="lobby-block">
+            <h3 class="block-title">
+              <svg class="ic block-ic" aria-hidden="true"><use href="#i-book"></use></svg>
+              ゲームの進め方
+            </h3>
+            <ol id="howto" class="howto-list"></ol>
+          </div>
+
+          <!-- ゲームを始めるのは先生です。生徒側は状態表示にしています。 -->
+          <div class="lobby-wait" id="lobbyWait" role="status">
+            <svg class="ic" aria-hidden="true"><use href="#i-play"></use></svg>
+            <span>先生の「ゲーム開始」を待っています…</span>
+          </div>
+        </div>
+
+        <!-- 右: ルーム情報 -->
+        <aside class="lobby-side">
+          <section class="side-panel">
+            <h3 class="side-title">
+              <svg class="ic" aria-hidden="true"><use href="#i-gear"></use></svg>ルーム設定
+            </h3>
+            <dl class="side-list" id="roomSettings"></dl>
+          </section>
+
+          <section class="side-panel">
+            <h3 class="side-title">
+              <svg class="ic" aria-hidden="true"><use href="#i-users"></use></svg>参加者一覧
+            </h3>
+            <ul class="roster" id="rosterList"></ul>
+          </section>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============================ 決定 ============================ -->
+    <section class="screen" data-screen="decision">
+      <div class="stack">
+        <div id="decEvent"></div>
+        <div id="decStatus"></div>
+        <div class="panel">
+          <div class="section-title">
+            <h2 id="decTitle">今年の経営を決めましょう</h2>
+            <span class="sub">えらび直しは、締め切りまで何度でもできます</span>
+          </div>
+          <div id="decGroups"></div>
+        </div>
+        <div id="decMargin"></div>
+        <div id="decSubmit" class="panel" style="position:sticky;bottom:12px;z-index:20"></div>
+        <div class="panel">
+          <div class="section-title"><h2>これまでの成績</h2></div>
+          <div id="decHistory"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ ラウンド結果 ============================ -->
+    <section class="screen" data-screen="result">
+      <div class="stack">
+        <div id="resHead"></div>
+        <div class="panel">
+          <div class="section-title"><h2 id="resTitle">あなたの会社の1年</h2></div>
+          <div id="resMine"></div>
+        </div>
+        <div class="panel">
+          <div class="section-title"><h2>クラス全体の結果</h2><span class="sub">利益の大きい順</span></div>
+          <div id="resAll"></div>
+        </div>
+        <div id="resLearn"></div>
+        <p class="center hint" id="resWait">先生が次に進めるのを待っています…</p>
+      </div>
+    </section>
+
+    <!-- ============================ 最終結果 ============================ -->
+    <section class="screen" data-screen="final">
+      <div class="stack" id="finalBody"></div>
+    </section>
+
+  </div>
+</main>
+
+<script type="module" src="/js/play.js"></script>
+</body>
+</html>

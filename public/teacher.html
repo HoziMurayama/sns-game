@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>フェアトレード・チャレンジ｜先生用コンソール</title>
+<link rel="stylesheet" href="/css/app.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+</head>
+<!-- 最初に出るのはルーム作成画面。JSが動く前から背景が正しく出るようにクラスを付けておく -->
+<body class="screen-setup">
+
+<header class="appbar">
+  <div class="wrap wrap-wide">
+    <a class="brand brand-link" href="/" title="トップページへ">
+      <svg class="ic brand-ic" aria-hidden="true"><use href="#i-pod"></use></svg>先生用コンソール
+    </a>
+    <span class="chip" id="chipRoom" hidden></span>
+    <span class="chip" id="chipRound" hidden></span>
+    <span class="chip" id="chipPlayers" hidden></span>
+    <span class="spacer"></span>
+    <button class="btn btn-ghost small" id="projBtn" style="color:#fff;border-color:rgba(255,255,255,.35)">拡大表示</button>
+    <span class="conn-badge" id="conn">接続中</span>
+  </div>
+</header>
+
+<main>
+  <div class="wrap wrap-wide">
+
+    <!-- ============================ ルーム作成 ============================ -->
+    <section class="screen active" data-screen="setup">
+      <div class="setup-layout">
+
+        <!-- 左: ゲームの流れ -->
+        <aside class="flow-rail" aria-label="ゲームの流れ">
+          <h2 class="flow-ribbon">ゲームの流れ</h2>
+          <ol class="flow-list">
+            <li><span class="flow-ic ic-farm"><svg class="ic"><use href="#i-farm"></use></svg></span><span class="flow-nm">カカオ農家</span></li>
+            <li><span class="flow-ic ic-coop"><svg class="ic"><use href="#i-coop"></use></svg></span><span class="flow-nm">協同組合</span></li>
+            <li><span class="flow-ic ic-ship"><svg class="ic"><use href="#i-ship"></use></svg></span><span class="flow-nm">輸出</span></li>
+            <li><span class="flow-ic ic-factory"><svg class="ic"><use href="#i-factory"></use></svg></span><span class="flow-nm">チョコレート会社</span></li>
+            <li><span class="flow-ic ic-shop"><svg class="ic"><use href="#i-shop"></use></svg></span><span class="flow-nm">お店</span></li>
+            <li><span class="flow-ic ic-people"><svg class="ic"><use href="#i-consumer"></use></svg></span><span class="flow-nm">消費者</span></li>
+          </ol>
+          <p class="flow-note">よりよい選択が、<br>みんなの未来をつくります。</p>
+          <svg class="flow-watermark" aria-hidden="true"><use href="#i-pod"></use></svg>
+        </aside>
+
+        <!-- 中央: 作成フォーム -->
+        <div class="setup-card">
+          <div class="setup-mark" aria-hidden="true"><svg class="ic"><use href="#i-pod"></use></svg></div>
+          <h1 class="setup-title">ゲームルームを作る</h1>
+          <p class="setup-sub">押すだけで始められます。設定はあとから変えられます。</p>
+
+          <div class="field">
+            <label for="rulesetSel"><svg class="ic lbl-ic" aria-hidden="true"><use href="#i-pod"></use></svg>ルールセット</label>
+            <select id="rulesetSel"></select>
+            <p class="field-help" id="rulesetNote"></p>
+          </div>
+
+          <div class="setup-pair">
+            <div class="field">
+              <label for="maxPlayers"><svg class="ic lbl-ic" aria-hidden="true"><use href="#i-pod"></use></svg>定員</label>
+              <select id="maxPlayers">
+                <option value="4">4人</option>
+                <option value="5">5人</option>
+                <option value="6" selected>6人</option>
+                <option value="7">7人</option>
+                <option value="8">8人</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="timerSec"><svg class="ic lbl-ic" aria-hidden="true"><use href="#i-pod"></use></svg>1ラウンドの制限時間</label>
+              <select id="timerSec">
+                <option value="0" selected>なし（先生が締め切る）</option>
+                <option value="60">1分</option>
+                <option value="90">1分30秒</option>
+                <option value="120">2分</option>
+                <option value="180">3分</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="demandMode"><svg class="ic lbl-ic" aria-hidden="true"><use href="#i-pod"></use></svg>市場のモデル</label>
+            <select id="demandMode">
+              <option value="independent" selected>通常モード：各社それぞれのお客さんに売る</option>
+              <option value="share">競争モード：クラス全体のお客さんを奪い合う</option>
+            </select>
+            <p class="field-help">
+              競争モードは、他社より安く・目立つほど自社の販売数が増えます。盛り上がりますが、ルールの説明は少し難しくなります。
+            </p>
+          </div>
+
+          <button class="btn-create" id="createBtn" type="button">
+            <svg class="ic btn-create-ic" aria-hidden="true"><use href="#i-flag"></use></svg>ルームを作成する
+          </button>
+
+          <div id="teacherResumeBox" hidden>
+            <div class="resume-box">
+              <p>前回のルームが残っています。</p>
+              <button class="btn" id="teacherResumeBtn" type="button">前回のルームに戻る</button>
+            </div>
+          </div>
+
+          <p class="crosslink">
+            <a href="/">← トップにもどる</a>
+            <span class="sep">／</span>
+            <a href="/play">生徒として参加する</a>
+          </p>
+        </div>
+
+        <!-- 右: 設定のポイント -->
+        <aside class="setup-side">
+          <section class="side-panel">
+            <h3 class="side-title">
+              <svg class="ic" aria-hidden="true"><use href="#i-bulb"></use></svg>設定のポイント
+            </h3>
+            <div class="tips">
+              <div class="tip">
+                <h4><svg class="ic tip-ic" aria-hidden="true"><use href="#i-pod"></use></svg>定員</h4>
+                <p>3〜6人がおすすめです。</p>
+                <p>クラス全体での実施も可能です。</p>
+              </div>
+              <div class="tip">
+                <h4><svg class="ic tip-ic" aria-hidden="true"><use href="#i-pod"></use></svg>制限時間</h4>
+                <p>1ラウンドの時間は<br>授業時間に合わせて設定できます。</p>
+              </div>
+              <div class="tip">
+                <h4><svg class="ic tip-ic" aria-hidden="true"><use href="#i-pod"></use></svg>市場モデル</h4>
+                <p>通常モードはシンプルで<br>初めての授業に最適です。</p>
+              </div>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============================ 待機（参加受付） ============================ -->
+    <section class="screen" data-screen="lobby">
+      <div class="grid grid-2">
+        <div class="panel center">
+          <h2>生徒に伝える番号</h2>
+          <div class="roomcode" id="roomCode">------</div>
+          <p class="joinurl" id="joinUrl"></p>
+          <div class="row" style="justify-content:center;margin-top:10px">
+            <div class="qr-box" id="qrBox"></div>
+          </div>
+          <p class="small muted" style="margin-top:10px">生徒はこのURLを開き、番号と名前を入れるだけです。</p>
+        </div>
+
+        <div class="panel">
+          <div class="section-title"><h2>参加者</h2><span class="sub" id="lobbyCount"></span></div>
+          <div id="lobbyPlayers"></div>
+          <div class="row" style="margin-top:16px">
+            <button class="btn" id="addBotBtn">🤖 練習用AIを追加</button>
+            <span class="small muted">人数が足りないとき・動作確認のときに使えます</span>
+          </div>
+          <button class="btn btn-primary btn-lg btn-block" id="startBtn" style="margin-top:16px">ゲームを開始する</button>
+          <p class="small muted center" id="startHint" style="margin-top:8px"></p>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top:16px">
+        <div class="section-title"><h2>授業の流れ（このゲームの進み方）</h2></div>
+        <div id="flowHelp" class="grid grid-3"></div>
+      </div>
+    </section>
+
+    <!-- ============================ 進行中 ============================ -->
+    <section class="screen" data-screen="running">
+      <div class="stack">
+        <div id="runHead"></div>
+        <div id="runEvent"></div>
+        <div id="runBody"></div>
+        <div class="panel no-print">
+          <div class="row">
+            <div class="grow" id="runStatusText"></div>
+            <button class="btn" id="forceBtn">締め切って結果を出す</button>
+            <button class="btn btn-primary btn-lg" id="nextBtn">次へ ▶</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ 最終結果 ============================ -->
+    <section class="screen" data-screen="final">
+      <div class="stack">
+        <div id="finalBody"></div>
+        <div class="panel no-print">
+          <div class="row">
+            <button class="btn" id="backBtn">◀ 戻る</button>
+            <div class="grow small muted" id="finalHint"></div>
+            <button class="btn" id="exportBtn">結果をCSVでダウンロード</button>
+            <button class="btn" id="restartBtn">同じメンバーでもう一度</button>
+            <button class="btn btn-primary btn-lg" id="nextBtn2">次へ ▶</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="panel no-print" id="adminBar" hidden style="margin-top:16px">
+      <div class="row">
+        <span class="small muted grow">ルーム <b id="adminCode"></b> ・ <span id="adminRule"></span></span>
+        <button class="btn btn-ghost small" id="printBtn">印刷</button>
+        <button class="btn btn-danger small" id="closeRoomBtn">ルームを終了する</button>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script type="module" src="/js/teacher.js"></script>
+</body>
+</html>
